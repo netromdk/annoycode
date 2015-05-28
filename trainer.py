@@ -9,7 +9,7 @@ def renderImage(char):
     if len(char) != 1:
         raise Exception("Use only one character!")
     font = ImageFont.truetype("Arial.ttf", 32)
-    image = Image.new("RGB", (48, 48), (255, 255, 255))
+    image = Image.new("RGB", (36, 44), (255, 255, 255))
     draw = ImageDraw.Draw(image)
     draw.text((2, 2), char, (0, 0, 0), font = font)
     return image
