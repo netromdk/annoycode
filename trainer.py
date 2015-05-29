@@ -5,13 +5,14 @@ from PIL import Image, ImageFont, ImageDraw, ImageChops
 # If images are >= 99.5% alike then they are accepted as "visually alike".
 THRESHOLD = 99.5
 
+FONT = ImageFont.truetype("Arial.ttf", 32)
+
 def renderImage(char):
     if len(char) != 1:
         raise Exception("Use only one character!")
-    font = ImageFont.truetype("Arial.ttf", 32)
     image = Image.new("RGB", (36, 44), (255, 255, 255))
     draw = ImageDraw.Draw(image)
-    draw.text((2, 2), char, (0, 0, 0), font = font)
+    draw.text((2, 2), char, (0, 0, 0), font = FONT)
     return image
 
 def compareChars(ch1, ch2):
@@ -26,11 +27,21 @@ def compareChars(ch1, ch2):
             if pix == (0, 0, 0):
                 black += 1
     percDiff = float(black) / float(w * h) * 100.0
-    return percDiff
+    return (percDiff, img1, img2)
 
 if __name__ == "__main__":
-    lst = [("\xE5", "\x61"), ("a", "a"), ("O", "0"), ("v", "u"), ("8", "B")]
-    for pair in lst:
-        diff = compareChars(*pair)
-        print("{} is {}% alike, visually similar = {}".\
-              format(pair, diff, diff >= THRESHOLD))
+    # The initial characteer will be "!" because below this the values are not
+    # representable.
+    initChr = ord("!")
+
+    amount = 1000
+    lastChr = initChr + amount
+    for x in range(initChr, lastChr):
+        for y in range(initChr, lastChr):
+            if x == y: continue
+            (diff, img1, img2) = compareChars(chr(x), chr(y))
+            if diff < THRESHOLD: continue
+            print("{} {} is {}% alike, visually similar".\
+                  format((x, hex(x), chr(x)), (y, hex(y), chr(y)), diff))
+            img1.save("test.{}.png".format(x))
+            img1.save("test.{}.png".format(y))
