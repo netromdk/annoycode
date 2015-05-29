@@ -39,18 +39,30 @@ def compareChars(ch1, ch2):
     return (percDiff, img1, img2)
 
 if __name__ == "__main__":
-    # The initial characteer will be "!" because below this the values are not
-    # representable.
-    initChr = ord("!")
-
     amount = 1000
+    matches = []
+
+    # The initial characteer will be "!" because below this the values are not
+    # graphically representable.
+    offset = ord("!")
+
+    initChr = offset
     lastChr = initChr + amount
+    print("Searching pairs from index {} to {}".format(initChr, lastChr))
+
     for x in range(initChr, lastChr):
         for y in range(initChr, lastChr):
             if x == y: continue
             (diff, img1, img2) = compareChars(chr(x), chr(y))
             if diff < THRESHOLD: continue
+            matches.append((x, y))
             print("{} {} is {}% alike, visually similar".\
                   format((x, hex(x), chr(x)), (y, hex(y), chr(y)), diff))
             img1.save("test.{}.png".format(x))
-            img1.save("test.{}.png".format(y))
+            img2.save("test.{}.png".format(y))
+
+        # Mark offset to which a full search has currently been done.
+        offset = x
+
+    print("Offset: {}".format(offset))
+    print("Matches found: {}".format(matches))
