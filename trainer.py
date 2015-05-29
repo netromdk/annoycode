@@ -1,6 +1,6 @@
 # == Requires python 3.4! ==
 # Find Unicode symbol pairs that look alike.
-import json
+import pickle
 from PIL import Image, ImageFont, ImageDraw, ImageChops
 
 # If images are >= 99.5% alike then they are accepted as "visually alike".
@@ -42,20 +42,18 @@ def compareChars(ch1, ch2):
 def save(offset, matches):
     data = {"offset": offset,
             "matches": matches}
-    with open("data.json", mode = "w+") as f:
-        json.dump(data, f)
+    f = open("matches.dat", mode = "wb+")
+    pickle.dump(data, f)
 
 def load():
     try:
-        f = open("data.json", mode = "r")
-        return json.load(f)
+        f = open("matches.dat", mode = "rb")
+        return pickle.load(f)
     except:
         return None
 
 if __name__ == "__main__":
-    amount = 1000
-    found = 0
-    matches = []
+    matches = {}
 
     # Stop when this amount of pairs have been found.
     stopAt = 5
@@ -64,7 +62,6 @@ if __name__ == "__main__":
     # graphically representable.
     offset = ord("!")
 
-    # If data was already computed then use it.
     data = load()
     if data:
         if "offset" in data:
@@ -72,11 +69,13 @@ if __name__ == "__main__":
         if "matches" in data:
             matches = data["matches"]
 
+    amount = 1000
     initChr = offset
     lastChr = initChr + amount
     print("Searching pairs from code point {} to {}".format(initChr, lastChr))
     print("Stopping after {} matches".format(stopAt))
 
+    found = 0
     for x in range(initChr, lastChr):
         for y in range(initChr, lastChr):
             if x == y: continue
@@ -84,7 +83,12 @@ if __name__ == "__main__":
             (diff, img1, img2) = compareChars(chr(x), chr(y))
             if diff < THRESHOLD: continue
 
-            matches.append([x, y, diff])
+            key = (x, y)
+            key2 = (y, x)
+            if key in matches or key2 in matches:
+                continue
+
+            matches[key] = diff
             found += 1
 
             print("#{}: {} and {} are {}% similar".\
