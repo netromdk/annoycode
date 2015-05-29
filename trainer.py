@@ -40,7 +40,11 @@ def compareChars(ch1, ch2):
 
 if __name__ == "__main__":
     amount = 1000
+    found = 0
     matches = []
+
+    # Stop when this amount of pairs have been found.
+    stopAt = 2
 
     # The initial characteer will be "!" because below this the values are not
     # graphically representable.
@@ -56,13 +60,18 @@ if __name__ == "__main__":
             (diff, img1, img2) = compareChars(chr(x), chr(y))
             if diff < THRESHOLD: continue
             matches.append((x, y))
+            found += 1
+
             print("{} {} is {}% alike, visually similar".\
                   format((x, hex(x), chr(x)), (y, hex(y), chr(y)), diff))
             img1.save("test.{}.png".format(x))
             img2.save("test.{}.png".format(y))
 
+            if found == stopAt: break
+        if found == stopAt: break
+
         # Mark offset to which a full search has currently been done.
         offset = x
 
     print("Offset: {}".format(offset))
-    print("Matches found: {}".format(matches))
+    print("{} matches found: {}".format(len(matches), matches))
