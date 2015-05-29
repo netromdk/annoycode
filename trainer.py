@@ -5,7 +5,16 @@ from PIL import Image, ImageFont, ImageDraw, ImageChops
 # If images are >= 99.5% alike then they are accepted as "visually alike".
 THRESHOLD = 99.5
 
-FONT = ImageFont.truetype("Arial.ttf", 32)
+def findFont():
+    fonts = ["Arial Unicode.ttf", "Arial.ttf"]
+    for name in fonts:
+        try:
+            font = ImageFont.truetype(name, 32)
+            return font
+        except: pass
+    raise Exception("Could not find any suitable fonts!")
+
+FONT = findFont()
 
 def renderImage(char):
     if len(char) != 1:
