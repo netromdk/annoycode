@@ -68,6 +68,7 @@ if __name__ == "__main__":
             offset = int(data["offset"])
         if "matches" in data:
             matches = data["matches"]
+            print("Using {} predetermined matches".format(len(matches)))
 
     amount = 1000
     initChr = offset
@@ -80,13 +81,14 @@ if __name__ == "__main__":
         for y in range(initChr, lastChr):
             if x == y: continue
 
-            (diff, img1, img2) = compareChars(chr(x), chr(y))
-            if diff < THRESHOLD: continue
-
+            # Don't try to match pair if already a result!
             key = (x, y)
             key2 = (y, x)
             if key in matches or key2 in matches:
                 continue
+
+            (diff, img1, img2) = compareChars(chr(x), chr(y))
+            if diff < THRESHOLD: continue
 
             matches[key] = diff
             found += 1
