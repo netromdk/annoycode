@@ -1,7 +1,7 @@
 # == Requires python 3.4! ==
 # Find Unicode symbol pairs that look alike.
-import pickle
 from PIL import Image, ImageFont, ImageDraw, ImageChops
+from Data import Data
 
 # If images are >= 99.5% alike then they are accepted as "visually alike".
 THRESHOLD = 99.5
@@ -39,43 +39,22 @@ def compareChars(ch1, ch2):
     percDiff = float(black) / float(w * h) * 100.0
     return (percDiff, img1, img2)
 
-def save(offset, matches):
-    data = {"offset": offset,
-            "matches": matches}
-    f = open("matches.dat", mode = "wb+")
-    pickle.dump(data, f)
-
-def load():
-    try:
-        f = open("matches.dat", mode = "rb")
-        return pickle.load(f)
-    except:
-        return None
-
 # A key pair always has the lowest value first.
 def getKey(x, y):
     return (min(x, y), max(x, y))
 
 if __name__ == "__main__":
-    matches = {}
+    data = Data()
+    data.load()
+
+    if len(data.matches) > 0:
+        print("Using {} predetermined matches".format(len(data.matches)))
 
     # Stop when this amount of pairs have been found.
-    stopAt = 5
-
-    # The initial characteer will be "!" because below this the values are not
-    # graphically representable.
-    offset = ord("!")
-
-    data = load()
-    if data:
-        if "offset" in data:
-            offset = int(data["offset"])
-        if "matches" in data:
-            matches = data["matches"]
-            print("Using {} predetermined matches".format(len(matches)))
+    stopAt = 3#5
 
     amount = 1000
-    initChr = offset
+    initChr = data.offset
     lastChr = initChr + amount
     print("Searching pairs from code point {} to {}".format(initChr, lastChr))
     print("Stopping after {} matches".format(stopAt))
@@ -87,12 +66,12 @@ if __name__ == "__main__":
 
             # Don't try to match pair if already a result!
             key = getKey(x, y)
-            if key in matches: continue
+            if key in data.matches: continue
 
             (diff, img1, img2) = compareChars(chr(x), chr(y))
             if diff < THRESHOLD: continue
 
-            matches[key] = diff
+            data.matches[key] = diff
             found += 1
 
             print("#{}: {} and {} are {}% similar".\
@@ -104,9 +83,9 @@ if __name__ == "__main__":
         if found == stopAt: break
 
         # Mark offset to which a full search has currently been done.
-        offset = x
+        data.offset = x
 
-    print("Offset: {}".format(offset))
-    print("{} matches found: {}".format(len(matches), matches))
+    print("End offset: {}".format(data.offset))
+    print("{} matches found: {}".format(len(data.matches), data.matches))
 
-    save(offset, matches)
+    data.save()
