@@ -52,6 +52,10 @@ def load():
     except:
         return None
 
+# A key pair always has the lowest value first.
+def getKey(x, y):
+    return (min(x, y), max(x, y))
+
 if __name__ == "__main__":
     matches = {}
 
@@ -82,10 +86,8 @@ if __name__ == "__main__":
             if x == y: continue
 
             # Don't try to match pair if already a result!
-            key = (x, y)
-            key2 = (y, x)
-            if key in matches or key2 in matches:
-                continue
+            key = getKey(x, y)
+            if key in matches: continue
 
             (diff, img1, img2) = compareChars(chr(x), chr(y))
             if diff < THRESHOLD: continue
@@ -95,8 +97,8 @@ if __name__ == "__main__":
 
             print("#{}: {} and {} are {}% similar".\
                   format(found, (x, hex(x), chr(x)), (y, hex(y), chr(y)), diff))
-            img1.save("test.{}.png".format(x))
-            img2.save("test.{}.png".format(y))
+            #img1.save("test.{}.png".format(x))
+            #img2.save("test.{}.png".format(y))
 
             if found == stopAt: break
         if found == stopAt: break
