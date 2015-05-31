@@ -53,3 +53,30 @@ class Data:
 
     def addMatch(self, x, y, sim):
         self.matches[orderTuple(x, y)] = sim
+
+    def hasMatches(self):
+        return len(self.matches) > 0
+
+    # Substitutes the input character with one that looks similary to it, if
+    # any. Returns None if nothing was found.
+    def subMatch(self, ch):
+        idx = ord(ch)
+        # TODO: find better/fast way to search matches!
+        for key in self.matches.keys():
+            if key[0] == idx:
+                return chr(key[1])
+        return None
+
+    # Substitute similar symbols with original.
+    def subMatches(self, string):
+        # TODO: Use some kind of string buffer/builder here!
+        res = ""
+        count = 0
+        for ch in string:
+            sch = self.subMatch(ch)
+            if sch:
+                count += 1
+                res += sch
+            else:
+                res += ch
+        return (res, count)
