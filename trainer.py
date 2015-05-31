@@ -48,7 +48,7 @@ if __name__ == "__main__":
         print("Using {} predetermined matches".format(len(data.matches)))
 
     # Stop when this amount of pairs have been found.
-    stopAt = 2
+    stopAt = 20
 
     amount = 1000
     initChr = data.offset
