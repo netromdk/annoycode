@@ -36,12 +36,8 @@ def compareChars(ch1, ch2):
             pix = diff.getpixel((x, y))
             if pix == (0, 0, 0):
                 black += 1
-    percDiff = float(black) / float(w * h) * 100.0
-    return (percDiff, img1, img2)
-
-# A key pair always has the lowest value first.
-def getKey(x, y):
-    return (min(x, y), max(x, y))
+    percSim = float(black) / float(w * h) * 100.0
+    return (percSim, img1, img2)
 
 if __name__ == "__main__":
     data = Data()
@@ -65,17 +61,16 @@ if __name__ == "__main__":
             if x == y: continue
 
             # Don't try to match pair if already a result!
-            key = getKey(x, y)
-            if key in data.matches: continue
+            if data.isMatch(x, y): continue
 
-            (diff, img1, img2) = compareChars(chr(x), chr(y))
-            if diff < THRESHOLD: continue
+            (sim, img1, img2) = compareChars(chr(x), chr(y))
+            if sim < THRESHOLD: continue
 
-            data.matches[key] = diff
+            data.addMatch(x, y, sim)
             found += 1
 
             print("#{}: {} and {} are {}% similar".\
-                  format(found, (x, hex(x), chr(x)), (y, hex(y), chr(y)), diff))
+                  format(found, (x, hex(x), chr(x)), (y, hex(y), chr(y)), sim))
             #img1.save("test.{}.png".format(x))
             #img2.save("test.{}.png".format(y))
 
