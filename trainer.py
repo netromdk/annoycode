@@ -2,6 +2,7 @@
 # Find Unicode symbol pairs that look alike.
 from PIL import Image, ImageFont, ImageDraw, ImageChops
 from data import Data
+from utils import orderTuple
 
 # If images are >= 99.5% alike then they are accepted as "visually alike".
 THRESHOLD = 99.5
@@ -47,7 +48,7 @@ if __name__ == "__main__":
         print("Using {} predetermined matches".format(len(data.matches)))
 
     # Stop when this amount of pairs have been found.
-    stopAt = 3#5
+    stopAt = 2
 
     amount = 1000
     initChr = data.offset
@@ -56,9 +57,15 @@ if __name__ == "__main__":
     print("Stopping after {} matches".format(stopAt))
 
     found = 0
+    tries = {}
     for x in range(initChr, lastChr):
         for y in range(initChr, lastChr):
             if x == y: continue
+
+            # Don't try with pairs already tried!
+            key = orderTuple(x, y)
+            if key in tries: continue
+            tries[key] = True
 
             # Don't try to match pair if already a result!
             if data.isMatch(x, y): continue
@@ -82,5 +89,6 @@ if __name__ == "__main__":
 
     print("End offset: {}".format(data.offset))
     print("{} matches found: {}".format(len(data.matches), data.matches))
+    print("{} unique pairs tried".format(len(tries)))
 
     data.save()

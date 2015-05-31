@@ -1,12 +1,9 @@
-# Implement a Data class that saves/loads the binary data file,
-#
-# - set/get offset
-#
-# - Must also check validity of loaded data, e.g. if offset is an integer and
-#   matches a dictionary of correct format.
+# Must also check validity of loaded data, e.g. if offset is an integer and
+# matches a dictionary of correct format.
 
 import pickle
 from constants import *
+from utils import orderTuple
 
 class Data:
     def __init__(self):
@@ -31,11 +28,8 @@ class Data:
         f = open(path, mode = "wb+")
         pickle.dump(data, f)
 
-    def _getKey(self, x, y):
-        return (min(x, y), max(x, y))
-
     def isMatch(self, x, y):
-        return self._getKey(x, y) in self.matches
+        return orderTuple(x, y) in self.matches
 
     def addMatch(self, x, y, sim):
-        self.matches[self._getKey(x, y)] = sim
+        self.matches[orderTuple(x, y)] = sim
