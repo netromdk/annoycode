@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # Changes Unicode symbols with other symbols that looks the same.
 
 from utils import checkPyVer

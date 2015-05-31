@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # Find Unicode symbol pairs that look alike.
 
 from utils import checkPyVer

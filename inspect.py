@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # Inspects a file by printing the UTF-8 encoded contents to STDOUT.
 
 from utils import checkPyVer

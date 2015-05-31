@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pickle
 from constants import *
 from utils import orderTuple
