@@ -1,10 +1,11 @@
-# == Requires python 3.4! ==
+# == Requires python 3! ==
 # Changes Unicode symbols with other symbols that looks the same.
 import sys
 from data import Data
 
 def usage():
     print("usage: {} <input file> <output file>".format(sys.argv[0]))
+    print("Substitutes symbols with ones that look similar.")
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
