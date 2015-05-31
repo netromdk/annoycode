@@ -6,6 +6,7 @@
 #   matches a dictionary of correct format.
 
 import pickle
+from constants import *
 
 class Data:
     def __init__(self):
@@ -16,7 +17,7 @@ class Data:
         # Matched pairs of the form (symbol 1, symbol 2) = % similarity.
         self.matches = {}
 
-    def load(self, path = "matches.dat"):
+    def load(self, path = DEFAULT_DATA_FILE):
         try:
             f = open(path, mode = "rb")
             data = pickle.load(f)
@@ -26,7 +27,7 @@ class Data:
                 self.matches = data["matches"]
         except: pass
 
-    def save(self, path = "matches.dat"):
+    def save(self, path = DEFAULT_DATA_FILE):
         data = {"offset": self.offset,
                 "matches": self.matches}
         f = open(path, mode = "wb+")
