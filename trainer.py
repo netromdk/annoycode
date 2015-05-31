@@ -1,7 +1,7 @@
 # == Requires python 3.4! ==
 # Find Unicode symbol pairs that look alike.
 from PIL import Image, ImageFont, ImageDraw, ImageChops
-from Data import Data
+from data import Data
 
 # If images are >= 99.5% alike then they are accepted as "visually alike".
 THRESHOLD = 99.5
