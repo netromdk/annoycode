@@ -1,5 +1,9 @@
-# == Requires python 3! ==
+#!/usr/bin/env python
 # Find Unicode symbol pairs that look alike.
+
+from utils import checkPyVer
+checkPyVer()
+
 from PIL import Image, ImageFont, ImageDraw, ImageChops
 from data import Data
 from utils import orderTuple

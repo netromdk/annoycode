@@ -1,5 +1,9 @@
-# == Requires python 3! ==
+#!/usr/bin/env python
 # Changes Unicode symbols with other symbols that looks the same.
+
+from utils import checkPyVer
+checkPyVer()
+
 import sys
 from data import Data
 

@@ -1,5 +1,9 @@
-# == Requires python 3! ==
+#!/usr/bin/env python
 # Inspects a file by printing the UTF-8 encoded contents to STDOUT.
+
+from utils import checkPyVer
+checkPyVer()
+
 import sys
 
 def usage():
