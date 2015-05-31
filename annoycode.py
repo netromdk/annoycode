@@ -8,11 +8,18 @@ if __name__ == "__main__":
         print("Use trainer.py to generate data for use.")
         exit(-1)
 
-    string = "A B C ! -"
+    string = "ABC!-"
+    stringEnc = string.encode("utf-8")
     (newString, subs) = data.subMatches(string)
+    newStringEnc = newString.encode("utf-8")
+
+    inCnt = len(stringEnc)
+    outCnt = len(newStringEnc)
+    incPerc = float(outCnt) / float(inCnt) * 100
 
     print("Input:  ", string)
-    print("        ", string.encode("utf-8"))
+    print("        ", stringEnc)
     print("Output: ", newString)
-    print("        ", newString.encode("utf-8"))
+    print("        ", newStringEnc)
     print("{} substitutions".format(subs))
+    print("{} -> {} bytes, +{}%".format(inCnt, outCnt, incPerc))
