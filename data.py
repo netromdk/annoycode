@@ -1,6 +1,3 @@
-# Must also check validity of loaded data, e.g. if offset is an integer and
-# matches a dictionary of correct format.
-
 import pickle
 from constants import *
 from utils import orderTuple
@@ -12,15 +9,38 @@ class Data:
         # Matched pairs of the form (symbol 1, symbol 2) = % similarity.
         self.matches = {}
 
+    # Loads data from binary file. If file not found or data is not valid then
+    # defaults will be kept. The return boolean value denotes whether any
+    # problems were encountered.
     def load(self, path = DEFAULT_DATA_FILE):
+        data = None
         try:
             f = open(path, mode = "rb")
             data = pickle.load(f)
-            if "offset" in data:
-                self.offset = int(data["offset"])
-            if "matches" in data:
-                self.matches = data["matches"]
-        except: pass
+
+        except:
+            print("No data file found, using defaults!")
+            return False
+
+        if not "offset" in data:
+            print("No 'offset' in data!")
+            return False
+
+        if type(data["offset"]) != type(1) or data["offset"] < 0:
+            print("'offset' must be a positive integer in data!")
+            return False
+
+        if not "matches" in data:
+            print("No 'matches' in data!")
+            return False
+
+        if type(data["matches"]) != type({}):
+            print("'matches' must be a dictionary in data!")
+            return False
+
+        self.offset = data["offset"]
+        self.matches = data["matches"]
+        return True
 
     def save(self, path = DEFAULT_DATA_FILE):
         data = {"offset": self.offset,
