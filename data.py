@@ -10,9 +10,7 @@ from constants import *
 
 class Data:
     def __init__(self):
-        # The initial character will be "!" because below this the values are
-        # not graphically representable.
-        self.offset = ord("!")
+        self.offset = INIT_SYMBOL_OFFSET
 
         # Matched pairs of the form (symbol 1, symbol 2) = % similarity.
         self.matches = {}
