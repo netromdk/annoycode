@@ -86,14 +86,13 @@ class Data:
 
     # Substitute similar symbols with original.
     def subMatches(self, string):
-        # TODO: Use some kind of string buffer/builder here!
-        res = ""
+        res = []
         count = 0
         for ch in string:
             sch = self.subMatch(ch)
             if sch:
                 count += 1
-                res += sch
+                res.append(sch)
             else:
-                res += ch
-        return (res, count)
+                res.append(ch)
+        return ("".join(res), count)
