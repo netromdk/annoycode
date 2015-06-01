@@ -24,6 +24,12 @@ usage: inspect.py <input file>
 Writes contents of file as UTF-8 encoded content to STDOUT.
 ```
 
+Also, the data file with substitutions is pickled in a binary format, so you can inspect the values like this:
+```
+usage: ./inspectdata.py <data file>
+Inspects a substitutions data file.
+```
+
 # Examples
 
 ```
