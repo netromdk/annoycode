@@ -62,10 +62,15 @@ class Data:
     # any. Returns None if nothing was found.
     def subMatch(self, ch):
         idx = ord(ch)
-        # TODO: find better/fast way to search matches!
+        # TODO:
+        # - find better/fast way to search matches!
+        # - search both first and second value, and also see if more than one
+        #   substitution exists. if it does then choose at random.
         for key in self.matches.keys():
             if key[0] == idx:
                 return chr(key[1])
+            if key[1] == idx:
+                return chr(key[0])
         return None
 
     # Substitute similar symbols with original.
