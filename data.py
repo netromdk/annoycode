@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import pickle
+import pickle, operator
 from constants import *
 from utils import orderTuple
 
@@ -58,14 +58,20 @@ class Data:
     def hasMatches(self):
         return len(self.matches) > 0
 
+    # Returns the list of key pairs sorted by the lowest first value.
+    def getSortedMatchesKeys(self):
+        keys = list(self.matches.keys())
+        keys.sort(key = operator.itemgetter(0))
+        return keys
+
     # Substitutes the input character with one that looks similary to it, if
-    # any. Returns None if nothing was found.
-    def subMatch(self, ch):
+    # any. 'keys' will be the sorted keys unless specified otherwise, this is
+    # for performance purposes when using subMatches(). Returns None if nothing
+    # was found.
+    def subMatch(self, ch, keys = None):
         idx = ord(ch)
-        # TODO:
-        # - find better/fast way to search matches!
-        # - search both first and second value, and also see if more than one
-        #   substitution exists. if it does then choose at random.
+        if not keys:
+            keys = self.getSortedMatchesKeys()
         for key in self.matches.keys():
             if key[0] == idx:
                 return chr(key[1])
@@ -78,8 +84,12 @@ class Data:
         # TODO: Use some kind of string buffer/builder here!
         res = ""
         count = 0
+
+        # Only generate the list once.
+        keys = self.getSortedMatchesKeys()
+
         for ch in string:
-            sch = self.subMatch(ch)
+            sch = self.subMatch(ch, keys = keys)
             if sch:
                 count += 1
                 res += sch
