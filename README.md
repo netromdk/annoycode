@@ -46,6 +46,12 @@ b'\xce\x91\xce\x92\xd0\xa1\xc7\x83\n'
 
 ```
 
+# Dependencies
+
+It is required to have the following installed:
+- Python 3+
+- Pillow 2.8+
+
 # Training data
 
 Data must be in hand in order to be able to substitute symbols and that is done
