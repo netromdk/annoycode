@@ -46,6 +46,20 @@ b'\xce\x91\xce\x92\xd0\xa1\xc7\x83\n'
 
 ```
 
+You can also go back again:
+```
+% ./annoycode.py test.out.txt test2.out.txt
+4 substitutions, 9 -> 5 bytes, -44.44444444444444%
+
+% ./inspect.py test2.out.txt
+=== 5 raw bytes ===
+b'ABC!\n'
+
+=== 5 rendered symbols ===
+ABC!
+
+```
+
 # Dependencies
 
 It is required to have the following installed:
