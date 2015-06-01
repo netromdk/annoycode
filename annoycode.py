@@ -58,5 +58,5 @@ if __name__ == "__main__":
     outCnt = len(outEnc)
     incPerc = float(outCnt) / float(inCnt) * 100 - 100
 
-    print("{} substitutions, {} -> {} bytes, {}%".\
-          format(subs, inCnt, outCnt, incPerc))
+    print("{} substitutions, {} -> {} bytes, {}{}%".\
+          format(subs, inCnt, outCnt, "+" if incPerc > 0 else "", incPerc))
