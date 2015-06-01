@@ -2,6 +2,7 @@
 import pickle, operator
 from constants import *
 from utils import orderTuple
+from random import shuffle
 
 class Data:
     def __init__(self):
@@ -65,14 +66,18 @@ class Data:
         return keys
 
     # Substitutes the input character with one that looks similary to it, if
-    # any. 'keys' will be the sorted keys unless specified otherwise, this is
-    # for performance purposes when using subMatches(). Returns None if nothing
-    # was found.
-    def subMatch(self, ch, keys = None):
+    # any. Returns None if nothing was found.
+    def subMatch(self, ch):
         idx = ord(ch)
-        if not keys:
-            keys = self.getSortedMatchesKeys()
-        for key in self.matches.keys():
+
+        # If there are several candidates then choose a random one.
+        slist = []
+        for key in self.matches:
+            if key[0] == idx or key[1] == idx:
+                slist.append(key)
+        shuffle(slist)
+
+        for key in slist:
             if key[0] == idx:
                 return chr(key[1])
             if key[1] == idx:
@@ -84,12 +89,8 @@ class Data:
         # TODO: Use some kind of string buffer/builder here!
         res = ""
         count = 0
-
-        # Only generate the list once.
-        keys = self.getSortedMatchesKeys()
-
         for ch in string:
-            sch = self.subMatch(ch, keys = keys)
+            sch = self.subMatch(ch)
             if sch:
                 count += 1
                 res += sch
