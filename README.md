@@ -17,14 +17,15 @@ Substitutes symbols with ones that look similar.
 ```
 
 Since the idea is to find symbols that look similar, then I have also
-implemented _inspect.py_ to be able to visualize the substituted results:
+implemented _inspectfile.py_ to be able to visualize the substituted results:
 
 ```
-usage: inspect.py <input file>
+usage: inspectfile.py <input file>
 Writes contents of file as UTF-8 encoded content to STDOUT.
 ```
 
-Also, the data file with substitutions is pickled in a binary format, so you can inspect the values like this:
+Also, the data file with substitutions is pickled in a binary format, so you can
+inspect the values like this:
 ```
 usage: ./inspectdata.py <data file>
 Inspects a substitutions data file.
@@ -36,14 +37,14 @@ Inspects a substitutions data file.
 % ./annoycode.py test.txt test.out.txt
 4 substitutions, 5 -> 9 bytes, +80.0%
 
-% ./inspect.py test.txt
+% ./inspectfile.py test.txt
 === 5 raw bytes ===
 b'ABC!\n'
 
 === 5 rendered symbols ===
 ABC!
 
-% ./inspect.py test.out.txt
+% ./inspectfile.py test.out.txt
 === 9 raw bytes ===
 b'\xce\x91\xce\x92\xd0\xa1\xc7\x83\n'
 
@@ -57,7 +58,7 @@ You can also go back again:
 % ./annoycode.py test.out.txt test2.out.txt
 4 substitutions, 9 -> 5 bytes, -44.44444444444444%
 
-% ./inspect.py test2.out.txt
+% ./inspectfile.py test2.out.txt
 === 5 raw bytes ===
 b'ABC!\n'
 
