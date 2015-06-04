@@ -1,7 +1,3 @@
-// TODO:
-// - Find a way to exclude results being the invalid "square" when the symbol
-//   could not be rendered.
-
 #include <QDebug>
 #include <QImage>
 #include <QPainter>
@@ -67,6 +63,17 @@ float getImageSimilarity(const QImage &img1, const QImage &img2) {
     return 0;
   }
 
+  // If all is black but white level is about waht the invalid "square" symbol
+  // is then deny it. Around 2201 whites for 2204 pixels which is ~0.955.
+  if (black == total) {
+    auto white1Perc = float(white1) / float(total),
+      white2Perc = float(white2) / float(total);
+    if ((white1Perc >= 0.94 && white1Perc <= 0.96) ||
+        (white2Perc >= 0.94 && white2Perc <= 0.96)) {
+      return 0;
+    }
+  }
+
   return float(black) / float(total);
 }
 
@@ -84,9 +91,9 @@ int main(int argc, char **argv) {
       auto img1 = renderSymbol(x),
         img2 = renderSymbol(y);
 
-      // Disregard if <99.7% similarity.
+      // Disregard if <99.6% similarity.
       auto diff = getImageSimilarity(img1, img2);
-      if (diff < 0.997) continue;
+      if (diff < 0.996) continue;
 
       qDebug() << x << QChar(x) << "~" << y << QChar(y) << diff;
 
