@@ -13,7 +13,6 @@ int main(int argc, char **argv) {
   parser.setApplicationDescription("Trains data by finding pairs of Unicode "
                                    "symbols that renders to similar text.");
   parser.addHelpOption();
-  parser.addVersionOption();
 
   QCommandLineOption
     fileOpt(QStringList() << "f" << "file",
@@ -21,6 +20,13 @@ int main(int argc, char **argv) {
                     "use \"%1\" otherwise.").arg(Consts::defaultDataFile),
             "data file");
   parser.addOption(fileOpt);
+
+  QCommandLineOption
+    stopAtOpt(QStringList() << "s" << "stop",
+              QString("Stop after <matches> are found. Will use \"%1\" "
+                      "otherwise.").arg(Consts::trainerStopAt),
+              "matches");
+  parser.addOption(stopAtOpt);
 
   parser.process(app);
 
@@ -36,9 +42,22 @@ int main(int argc, char **argv) {
     amount = 1000,
     end = initSym + amount,
     count = 0,
-    stopAt = 3;//-1;
+    stopAt = Consts::trainerStopAt;
+
+  if (parser.isSet(stopAtOpt)) {
+    bool ok;
+    QString sval = parser.value(stopAtOpt);
+    int val = sval.toUInt(&ok);
+    if (ok && val > 0) {
+      stopAt = val;
+    }
+    else {
+      qWarning() << "Invalid stop-at value:" << sval;
+    }
+  }
 
   qDebug() << "Searching in range" << initSym << "to" << end;
+  qDebug() << "Stopping after" << stopAt << "matches are found";
 
   for (auto x = initSym; x < end; x++) {
     for (auto y = initSym; y < end; y++) {
