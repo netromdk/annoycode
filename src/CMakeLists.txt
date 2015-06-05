@@ -3,6 +3,9 @@ add_executable(
   trainer
 
   trainer.cpp
+
+  Util.h
+  Util.cpp
   )
 
 qt5_use_modules(trainer Core)
