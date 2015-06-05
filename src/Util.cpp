@@ -1,6 +1,5 @@
 #include "Util.h"
 
-#include <QImage>
 #include <QPainter>
 
 QImage Util::renderSymbol(quint16 symbol) {

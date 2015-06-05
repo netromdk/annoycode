@@ -2,6 +2,7 @@
 #include <QApplication>
 
 #include "Util.h"
+#include "Constants.h"
 
 int main(int argc, char **argv) {
   QApplication app(argc, argv);
@@ -18,9 +19,8 @@ int main(int argc, char **argv) {
       auto img1 = Util::renderSymbol(x),
         img2 = Util::renderSymbol(y);
 
-      // Disregard if < 99.6% similarity.
       auto diff = Util::getImageSimilarity(img1, img2);
-      if (diff < 0.996) continue;
+      if (diff < Consts::SimilarityThreshold) continue;
 
       count++;
       qDebug() << qPrintable(QString("#%1:").arg(count)) << x << QChar(x) << "~"
