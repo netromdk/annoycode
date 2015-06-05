@@ -130,11 +130,23 @@ bool Data::save() {
 }
 
 void Data::addSubstitution(quint16 x, quint16 y, float similarity) {
+  if (x == y) return;
   subs[makePair(x, y)] = similarity;
 }
 
 bool Data::hasSubstitution(quint16 x, quint16 y) const {
   return subs.contains(makePair(x, y));
+}
+
+void Data::addSubstitutions(const SubsMap &subs_) {
+  foreach (const auto &pair, subs_.keys()) {
+    if (pair.first == pair.second) {
+      continue;
+    }
+    if (!this->subs.contains(pair)) {
+      this->subs[pair] = subs_[pair];
+    }
+  }
 }
 
 QString Data::substitute(const QString &data, int &count) {

@@ -1,8 +1,12 @@
 #include <QDebug>
+#include <QMutex>
+#include <QThread>
+#include <QThreadPool>
 #include <QApplication>
+#include <QMutexLocker>
 #include <QCommandLineParser>
 
-#include "Util.h"
+#include "Job.h"
 #include "Data.h"
 #include "Constants.h"
 
@@ -28,6 +32,13 @@ int main(int argc, char **argv) {
               "matches");
   parser.addOption(stopAtOpt);
 
+  QCommandLineOption
+    threadsOpt(QStringList() << "t" << "threads",
+               "Use <num> of threads to search for mathes. Defaults to using "
+               "all available ones, with value \"0\".",
+               "num");
+  parser.addOption(threadsOpt);
+
   parser.process(app);
 
   QString path;
@@ -39,10 +50,9 @@ int main(int argc, char **argv) {
   data.load();
 
   auto initSym = data.getOffset(),
-    amount = 1000,
-    end = initSym + amount,
-    count = 0,
-    stopAt = Consts::trainerStopAt;
+    end = 65535, // unsigned short max - 1
+    stopAt = Consts::trainerStopAt,
+    threads = 0;
 
   if (parser.isSet(stopAtOpt)) {
     bool ok;
@@ -56,41 +66,54 @@ int main(int argc, char **argv) {
     }
   }
 
-  qDebug() << "Searching in range" << initSym << "to" << end;
-  qDebug() << "Stopping after" << stopAt << "matches are found";
-
-  for (auto x = initSym; x < end; x++) {
-    for (auto y = initSym; y < end; y++) {
-      if (x == y) continue;
-
-      if (data.hasSubstitution(x, y)) {
-        continue;
-      }
-
-      auto img1 = Util::renderSymbol(x),
-        img2 = Util::renderSymbol(y);
-
-      auto sim = Util::getImageSimilarity(img1, img2);
-      if (sim < Consts::similarityThreshold) continue;
-
-      data.addSubstitution(x, y, sim);
-
-      count++;
-      qDebug() << qPrintable(QString("#%1:").arg(count)) << x << QChar(x) << "~"
-               << y << QChar(y) << sim;
-
-      //img1.save(QString("img1.%1.png").arg(x));
-      //img2.save(QString("img2.%1.png").arg(y));
-
-      if (count == stopAt) break;
+  if (parser.isSet(threadsOpt)) {
+    bool ok;
+    QString sval = parser.value(threadsOpt);
+    int val = sval.toUInt(&ok);
+    if (ok) {
+      threads = val;
     }
-
-    if (count == stopAt) break;
-
-    // Mark offset to which a full search has currently been done.
-    data.setOffset(x);
+    else {
+      qWarning() << "Invalid threads value:" << sval;
+    }
   }
 
+  if (threads == 0) {
+    threads = QThread::idealThreadCount();
+  }
+
+  qDebug() << "Searching in range" << initSym << "to" << end;
+  qDebug() << "Stopping after" << stopAt << "matches are found";
+  qDebug() << "Using" << threads << "threads";
+
+  QThreadPool pool;
+  pool.setMaxThreadCount(threads);
+
+  QMutex mutex;
+
+  for (auto x = initSym; x < end; x++) {
+    auto *job = new Job(x, end);
+    job->setAutoDelete(true);
+    QObject::connect(job, &Job::finished,
+                     [&data, &mutex](int start, int end, SubsMap matches) {
+                       QMutexLocker loacker(&mutex);
+
+                       auto oldCount = data.getCount();
+                       data.addSubstitutions(matches);
+                       auto count = data.getCount();
+                       if (oldCount < count) {
+                         qDebug() << "Matches found:" << data.getCount();
+                       }
+
+                       data.setOffset(start);
+
+                       // TODO: Implement support for stop-at again. then stop
+                       // all threads running.
+                     });
+    pool.start(job);
+  }
+
+  pool.waitForDone();
   data.save();
   return 0;
 }

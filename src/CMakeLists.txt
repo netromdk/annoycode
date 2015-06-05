@@ -20,6 +20,9 @@ add_executable(
   trainer
 
   trainer.cpp
+
+  Job.h
+  Job.cpp
   )
 
 target_link_libraries(trainer common)

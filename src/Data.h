@@ -21,7 +21,13 @@ public:
   void addSubstitution(quint16 x, quint16 y, float similarity);
   bool hasSubstitution(quint16 x, quint16 y) const;
 
+  void addSubstitutions(const SubsMap &subs);
+
   QString substitute(const QString &data, int &count);
+
+  SubsMap getSubstitutions() const { return subs; }
+
+  int getCount() const { return subs.size(); }
 
 private:
   inline SubsPair makePair(quint16 x, quint16 y) const;
