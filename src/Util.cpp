@@ -4,17 +4,17 @@
 #include "Constants.h"
 
 QImage Util::renderSymbol(quint16 symbol) {
-  QImage img(Consts::ImageWidth, Consts::ImageHeight, QImage::Format_RGB888);
+  QImage img(Consts::imageWidth, Consts::imageHeight, QImage::Format_RGB888);
   img.fill(Qt::white);
 
   QPainter painter;
   painter.begin(&img);
 
   auto font = painter.font();
-  font.setPointSize(Consts::ImageFontSize);
+  font.setPointSize(Consts::imageFontSize);
   painter.setFont(font);
 
-  painter.drawText(Consts::ImageTextStartX, Consts::ImageTextStartY,
+  painter.drawText(Consts::imageTextStartX, Consts::imageTextStartY,
                    QChar(symbol));
   painter.end();
 

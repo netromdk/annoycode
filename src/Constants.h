@@ -1,14 +1,20 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <QString>
+
 class Consts {
 public:
-  static constexpr int ImageWidth = 48; // px
-  static constexpr int ImageHeight = 48; // px
-  static constexpr int ImageFontSize = 20; // pt
-  static constexpr int ImageTextStartX = 2; // px
-  static constexpr int ImageTextStartY = 30; // px
-  static constexpr float SimilarityThreshold = 0.996;
+  static constexpr int imageWidth = 48; // px
+  static constexpr int imageHeight = 48; // px
+  static constexpr int imageFontSize = 20; // pt
+  static constexpr int imageTextStartX = 2; // px
+  static constexpr int imageTextStartY = 30; // px
+  static constexpr float similarityThreshold = 0.996;
+  static const QString defaultDataFile;
+
+  // 33 is the ordinal of '!'; the first representable character.
+  static constexpr int initialOffset = 33;
 };
 
 #endif // CONSTANTS_H

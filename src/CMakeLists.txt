@@ -4,8 +4,14 @@ add_executable(
 
   trainer.cpp
 
+  Constants.h
+  Constants.cpp
+
   Util.h
   Util.cpp
+
+  Data.h
+  Data.cpp
   )
 
 qt5_use_modules(trainer Core)
