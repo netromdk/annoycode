@@ -82,7 +82,8 @@ int main(int argc, char **argv) {
 
   quint16 initSym = QChar('!').unicode(),
     amount = 1000,
-    end = initSym + amount;
+    end = initSym + amount,
+    count = 0;
 
   for (auto x = initSym; x < end; x++) {
     for (auto y = initSym; y < end; y++) {
@@ -91,14 +92,16 @@ int main(int argc, char **argv) {
       auto img1 = renderSymbol(x),
         img2 = renderSymbol(y);
 
-      // Disregard if <99.6% similarity.
+      // Disregard if < 99.6% similarity.
       auto diff = getImageSimilarity(img1, img2);
       if (diff < 0.996) continue;
 
-      qDebug() << x << QChar(x) << "~" << y << QChar(y) << diff;
+      count++;
+      qDebug() << qPrintable(QString("#%1:").arg(count)) << x << QChar(x) << "~"
+               << y << QChar(y) << diff;
 
-      img1.save(QString("img1.%1.png").arg(x));
-      img2.save(QString("img2.%1.png").arg(y));
+      //img1.save(QString("img1.%1.png").arg(x));
+      //img2.save(QString("img2.%1.png").arg(y));
     }
   }
 
