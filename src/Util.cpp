@@ -1,19 +1,21 @@
-#include "Util.h"
-
 #include <QPainter>
 
+#include "Util.h"
+#include "Constants.h"
+
 QImage Util::renderSymbol(quint16 symbol) {
-  QImage img(48, 48, QImage::Format_RGB888);
+  QImage img(Consts::ImageWidth, Consts::ImageHeight, QImage::Format_RGB888);
   img.fill(Qt::white);
 
   QPainter painter;
   painter.begin(&img);
 
   auto font = painter.font();
-  font.setPointSize(20);
+  font.setPointSize(Consts::ImageFontSize);
   painter.setFont(font);
 
-  painter.drawText(2, 30, QChar(symbol));
+  painter.drawText(Consts::ImageTextStartX, Consts::ImageTextStartY,
+                   QChar(symbol));
   painter.end();
 
   return img;
