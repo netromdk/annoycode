@@ -10,13 +10,14 @@ void Job::run() {
   auto data = Data();
 
   auto x = start;
+  auto img1 = Util::renderSymbol(x);
+
   for (auto y = x + 1; y <= end; y++) {
     if (data.hasSubstitution(x, y)) {
       continue;
     }
 
-    auto img1 = Util::renderSymbol(x),
-      img2 = Util::renderSymbol(y);
+    auto img2 = Util::renderSymbol(y);
 
     auto sim = Util::getImageSimilarity(img1, img2);
     if (sim < Consts::similarityThreshold) continue;
