@@ -4,6 +4,9 @@
 #include <QVariantMap>
 #include <QJsonDocument>
 
+#include <random>
+#include <algorithm>
+
 #include "Data.h"
 #include "Constants.h"
 
@@ -132,6 +135,49 @@ void Data::addSubstitution(quint16 x, quint16 y, float similarity) {
 
 bool Data::hasSubstitution(quint16 x, quint16 y) const {
   return subs.contains(makePair(x, y));
+}
+
+QString Data::substitute(const QString &data, int &count) {
+  count = 0;
+
+  QStringList parts;
+  QList<SubsPair> candList;
+  std::random_device rd;
+  std::mt19937 g(rd());
+
+  foreach (const auto &ch, data) {
+    auto sym = ch.unicode();
+
+    candList.clear();
+    foreach (const auto &pair, subs.keys()) {
+      if (pair.first == sym || pair.second == sym) {
+        candList << pair;
+      }
+    }
+    std::shuffle(candList.begin(), candList.end(), g);
+
+    bool found = false;
+    foreach (const auto &pair, candList) {
+      if (pair.first == sym) {
+        found = true;
+        parts << QChar(pair.second);
+        break;
+      }
+      else if (pair.second == sym) {
+        found = true;
+        parts << QChar(pair.first);
+        break;
+      }
+    }
+
+    if (found) {
+      count++;
+    }
+    else {
+      parts << ch;
+    }
+  }
+  return parts.join("");
 }
 
 inline SubsPair Data::makePair(quint16 x, quint16 y) const {
