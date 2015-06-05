@@ -91,7 +91,7 @@ int main(int argc, char **argv) {
 
   QMutex mutex;
 
-  for (auto x = initSym; x < end; x++) {
+  for (auto x = initSym; x <= end; x++) {
     auto *job = new Job(x, end);
     job->setAutoDelete(true);
     QObject::connect(job, &Job::finished,
