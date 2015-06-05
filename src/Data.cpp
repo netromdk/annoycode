@@ -16,7 +16,7 @@ Data::Data(const QString &path) : path(path), offset(Consts::initialOffset) {
 bool Data::load() {
   QFile file(path);
   if (!file.open(QIODevice::ReadOnly)) {
-    qCritical() << "Could not open file for reading:" << path;
+    qCritical() << "File does not exist or isn't readable:" << path;
     return false;
   }
 
@@ -93,7 +93,9 @@ bool Data::load() {
     }
   }
 
-  qDebug() << qPrintable(QString("Loaded %1 substitutions.").arg(subs.size()));
+  QString msg =
+    QString("Loaded %1 substitutions from %2").arg(subs.size()).arg(path);
+  qDebug() << qPrintable(msg);
   return true;
 }
 
@@ -113,12 +115,14 @@ bool Data::save() {
   }
   map["substitutions"] = subsMap;
 
-  qDebug() << qPrintable(QString("Saved %1 substitutions.").arg(subs.size()));
+  QString msg =
+    QString("Saved %1 substitutions to %2").arg(subs.size()).arg(path);
+  qDebug() << qPrintable(msg);
 
   auto obj = QJsonObject::fromVariantMap(map);
   QJsonDocument doc(obj);
 
-  file.write(doc.toJson());
+  file.write(doc.toJson(QJsonDocument::Compact));
   return true;
 }
 

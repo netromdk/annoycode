@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QApplication>
+#include <QCommandLineParser>
 
 #include "Util.h"
 #include "Data.h"
@@ -8,14 +9,36 @@
 int main(int argc, char **argv) {
   QApplication app(argc, argv);
 
-  auto data = Data();
+  QCommandLineParser parser;
+  parser.setApplicationDescription("Trains data by finding pairs of Unicode "
+                                   "symbols that renders to similar text.");
+  parser.addHelpOption();
+  parser.addVersionOption();
+
+  QCommandLineOption
+    fileOpt(QStringList() << "f" << "file",
+            QString("Use substitutions from <data file>. Will "
+                    "use \"%1\" otherwise.").arg(Consts::defaultDataFile),
+            "data file");
+  parser.addOption(fileOpt);
+
+  parser.process(app);
+
+  QString path;
+  if (parser.isSet(fileOpt)) {
+    path = parser.value(fileOpt);
+  }
+
+  auto data = Data(path);
   data.load();
 
   auto initSym = data.getOffset(),
     amount = 1000,
     end = initSym + amount,
     count = 0,
-    stopAt = -1;
+    stopAt = 3;//-1;
+
+  qDebug() << "Searching in range" << initSym << "to" << end;
 
   for (auto x = initSym; x < end; x++) {
     for (auto y = initSym; y < end; y++) {
