@@ -59,6 +59,8 @@ int main(int argc, char **argv) {
   auto data = Data(path);
   data.load();
 
+  QByteArray inDataRaw = inData.toUtf8();
+
   int count;
   QString res = data.substitute(inData, count);
 
@@ -66,7 +68,15 @@ int main(int argc, char **argv) {
   outFile.write(outData);
   outFile.close();
 
-  qDebug() << qPrintable(QString("%1 substitutions").arg(count));
+  auto inCnt = inDataRaw.size(),
+    outCnt = outData.size();
+  auto incPerc = float(outCnt) / float(inCnt) * 100 - 100;
+
+  QString msg =
+    QString("%1 substitutions applied, %2 -> %3 bytes, %4%5%")
+    .arg(count).arg(inCnt).arg(outCnt).arg(incPerc > 0 ? "+" : "")
+    .arg(incPerc);
+  qDebug() << qPrintable(msg);
 
   return 0;
 }
