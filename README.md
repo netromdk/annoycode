@@ -74,3 +74,16 @@ Data must be in hand in order to be able to substitute symbols and that is done
 using the _trainer_. I have already included a file with some substitutions
 in _data.json_ that will be implicitly used by _annoycode_ and _inspect_ if run
 in the same folder.
+
+```
+Usage: trainer [options]
+Trains data by finding pairs of Unicode symbols that renders to similar text.
+
+Options:
+  -h, --help              Displays this help.
+  -f, --file <data file>  Use substitutions from <data file>. Will use
+                          "data.json" otherwise.
+  -t, --threads <num>     Use <num> of threads to search for mathes. Defaults
+                          to using all available ones, with value "0".
+  -i, --inc-save          Incrementally save results to disk.
+```
