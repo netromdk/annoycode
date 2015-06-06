@@ -11,9 +11,7 @@ add_library(
   Data.cpp
   )
 
-qt5_use_modules(common Core)
-qt5_use_modules(common Gui)
-qt5_use_modules(common Widgets)
+qt5_use_modules(common Core Gui Widgets)
 
 # Trainer executable.
 add_executable(
@@ -35,3 +33,12 @@ add_executable(
   )
 
 target_link_libraries(annoycode common)
+
+# Inspect executable.
+add_executable(
+  inspect
+
+  inspect.cpp
+  )
+
+qt5_use_modules(inspect Core)
