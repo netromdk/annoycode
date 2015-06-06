@@ -65,7 +65,8 @@ ABC!
 # Dependencies
 
 It is required to have the following installed:
-- C++11 compliant compiler
+- C++11 compliant compiler: Clang or GCC preferebly
+- Cmake 3+
 - Qt 5+ framework
 
 # Training data
