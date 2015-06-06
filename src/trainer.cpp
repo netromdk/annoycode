@@ -26,18 +26,16 @@ int main(int argc, char **argv) {
   parser.addOption(fileOpt);
 
   QCommandLineOption
-    stopAtOpt(QStringList() << "s" << "stop",
-              QString("Stop after <matches> are found. Will use \"%1\" "
-                      "otherwise.").arg(Consts::trainerStopAt),
-              "matches");
-  parser.addOption(stopAtOpt);
-
-  QCommandLineOption
     threadsOpt(QStringList() << "t" << "threads",
                "Use <num> of threads to search for mathes. Defaults to using "
                "all available ones, with value \"0\".",
                "num");
   parser.addOption(threadsOpt);
+
+  QCommandLineOption
+    incSaveOpt(QStringList() << "i" << "inc-save",
+               "Incrementally save results to disk.");
+  parser.addOption(incSaveOpt);
 
   parser.process(app);
 
@@ -51,20 +49,8 @@ int main(int argc, char **argv) {
 
   auto initSym = data.getOffset(),
     end = 65535, // unsigned short max - 1
-    stopAt = Consts::trainerStopAt,
     threads = 0;
-
-  if (parser.isSet(stopAtOpt)) {
-    bool ok;
-    QString sval = parser.value(stopAtOpt);
-    int val = sval.toUInt(&ok);
-    if (ok && val > 0) {
-      stopAt = val;
-    }
-    else {
-      qWarning() << "Invalid stop-at value:" << sval;
-    }
-  }
+  auto incSave = parser.isSet(incSaveOpt);
 
   if (parser.isSet(threadsOpt)) {
     bool ok;
@@ -83,7 +69,6 @@ int main(int argc, char **argv) {
   }
 
   qDebug() << "Searching in range" << initSym << "to" << end;
-  qDebug() << "Stopping after" << stopAt << "matches are found";
   qDebug() << "Using" << threads << "threads";
 
   QThreadPool pool;
@@ -95,20 +80,23 @@ int main(int argc, char **argv) {
     auto *job = new Job(x, end);
     job->setAutoDelete(true);
     QObject::connect(job, &Job::finished,
-                     [&data, &mutex](int start, int end, SubsMap matches) {
+                     [&data, &mutex, incSave](int start, int end, SubsMap matches) {
                        QMutexLocker loacker(&mutex);
 
                        auto oldCount = data.getCount();
                        data.addSubstitutions(matches);
                        auto count = data.getCount();
-                       if (oldCount < count) {
-                         qDebug() << "Matches found:" << data.getCount();
-                       }
 
                        data.setOffset(start);
 
-                       // TODO: Implement support for stop-at again. then stop
-                       // all threads running.
+                       if (count > 0 && count > oldCount) {
+                         if (incSave) {
+                           data.save();
+                         }
+                         else {
+                           qDebug() << "Matches found:" << data.getCount();
+                         }
+                       }
                      });
     pool.start(job);
   }

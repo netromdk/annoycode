@@ -17,8 +17,6 @@ public:
 
   // 33 is the ordinal of '!'; the first representable character.
   static constexpr int initialOffset = 33;
-
-  static constexpr int trainerStopAt = 25;
 };
 
 #endif // CONSTANTS_H
