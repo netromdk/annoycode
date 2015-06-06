@@ -10,71 +10,67 @@ The project was born due to a similar path/Unicode bug at the office.
 
 # Usage
 
-The main program _annoycode.py_ is used in the following way:
+The main program _annoycode_ is used in the following way:
 ```
-usage: annoycode.py <input file> <output file>
-Substitutes symbols with ones that look similar.
+Usage: annoycode [options] <input file> <output file>
+Substitues Unicode symbols that look similar.
+
+Options:
+  -h, --help              Displays this help.
+  -f, --file <data file>  Use substitutions from <data file>. Will use
+                          "data.json" otherwise.
+
+Arguments:
+  input file              File to read values from.
+  output file             File to write results to.
 ```
 
 Since the idea is to find symbols that look similar, then I have also
-implemented _inspectfile.py_ to be able to visualize the substituted results:
+implemented _inspect_ to be able to visualize the substituted results:
 
 ```
-usage: inspectfile.py <input file>
-Writes contents of file as UTF-8 encoded content to STDOUT.
-```
+Usage: inspect [options] <input file>
+Inspects Unicode file contents.
 
-Also, the data file with substitutions is pickled in a binary format, so you can
-inspect the values like this:
-```
-usage: ./inspectdata.py <data file>
-Inspects a substitutions data file.
+Options:
+  -h, --help  Displays this help.
+
+Arguments:
+  input file  File to read values from.
 ```
 
 # Examples
 
 ```
-% ./annoycode.py test.txt test.out.txt
-4 substitutions, 5 -> 9 bytes, +80.0%
+% ./annoycode test.txt test.out.txt
+Loaded 23919 substitutions from data.json
+3 substitutions applied, 5 -> 8 bytes, +60%
 
-% ./inspectfile.py test.txt
+% ./inspect test.txt
 === 5 raw bytes ===
-b'ABC!\n'
+ABC!
 
 === 5 rendered symbols ===
 ABC!
 
-% ./inspectfile.py test.out.txt
-=== 9 raw bytes ===
-b'\xce\x91\xce\x92\xd0\xa1\xc7\x83\n'
+% ./inspect test.out.txt
+=== 8 raw bytes ===
+\u913\u914\u1057!
 
 === 5 rendered symbols ===
-ΑΒСǃ
-
-```
-
-You can also go back again:
-```
-% ./annoycode.py test.out.txt test2.out.txt
-4 substitutions, 9 -> 5 bytes, -44.44444444444444%
-
-% ./inspectfile.py test2.out.txt
-=== 5 raw bytes ===
-b'ABC!\n'
-
-=== 5 rendered symbols ===
-ABC!
+ΑΒС!
 
 ```
 
 # Dependencies
 
 It is required to have the following installed:
-- Python 3+
-- Pillow 2.8+
+- C++11 compliant compiler
+- Qt 5+ framework
 
 # Training data
 
 Data must be in hand in order to be able to substitute symbols and that is done
-using the _trainer.py_. I have already included a file with some substitutions
-in _data.p_ that will be implicitly used by _annoycode.py_.
+using the _trainer_. I have already included a file with some substitutions
+in _data.json_ that will be implicitly used by _annoycode_ and _inspect_ if run
+in the same folder.
