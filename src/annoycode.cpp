@@ -39,11 +39,13 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  QString inData = QString::fromUtf8(inFile.readAll());
+  QByteArray inData = inFile.readAll();
   if (inData.isEmpty()) {
     qCritical() << "Input file is empty!";
     return -1;
   }
+
+  QString inText = QString::fromUtf8(inData);
 
   QFile outFile(posArgs[1]);
   if (!outFile.open(QIODevice::WriteOnly)) {
@@ -59,16 +61,14 @@ int main(int argc, char **argv) {
   auto data = Data(path);
   data.load();
 
-  QByteArray inDataRaw = inData.toUtf8();
-
   int count;
-  QString res = data.substitute(inData, count);
+  QString res = data.substitute(inText, count);
 
   QByteArray outData = res.toUtf8();
   outFile.write(outData);
   outFile.close();
 
-  auto inCnt = inDataRaw.size(),
+  auto inCnt = inData.size(),
     outCnt = outData.size();
   auto incPerc = float(outCnt) / float(inCnt) * 100 - 100;
 
