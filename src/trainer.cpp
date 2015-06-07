@@ -80,7 +80,11 @@ int main(int argc, char **argv) {
   [&data, &mutex, incSave](int start, int end, SubsMap matches) {
     QMutexLocker loacker(&mutex);
 
-    qDebug() << "Finished offset:" << start;
+    auto remPerc = 100.0 - float(end - start) / float(end) * 100.0;
+    QString msg =
+      QString("Finished offset: %1, %2 remaining, %3% done")
+      .arg(start).arg(end - start).arg(remPerc);
+    qDebug() << qPrintable(msg);
 
     auto oldCount = data.getCount();
     data.addSubstitutions(matches);
