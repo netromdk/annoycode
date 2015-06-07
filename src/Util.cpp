@@ -65,12 +65,12 @@ float Util::getImageSimilarity(const QImage &img1, const QImage &img2) {
   }
 
   // If all is black but white level is about waht the invalid "square" symbol
-  // is then deny it. Around 2201 whites for 2204 pixels which is ~0.955.
+  // is then deny it. Around 3996 whites for 4096 pixels which is ~0.975.
   if (black == total) {
     auto white1Perc = float(white1) / float(total),
       white2Perc = float(white2) / float(total);
-    if ((white1Perc >= 0.94 && white1Perc <= 0.96) ||
-        (white2Perc >= 0.94 && white2Perc <= 0.96)) {
+    if ((white1Perc >= 0.97 && white1Perc <= 0.98) ||
+        (white2Perc >= 0.97 && white2Perc <= 0.98)) {
       return 0;
     }
   }

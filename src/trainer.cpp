@@ -83,13 +83,15 @@ int main(int argc, char **argv) {
   (int start, int end, SubsMap matches, qint64 msElapsed) {
     QMutexLocker loacker(&mutex);
 
-    if (msElapsed < minElapsed || minElapsed == 0) {
-      minElapsed = msElapsed;
+    if (msElapsed > 0) {
+      if (msElapsed < minElapsed || minElapsed == 0) {
+        minElapsed = msElapsed;
+      }
+      if (msElapsed > maxElapsed) {
+        maxElapsed = msElapsed;
+      }
+      avgElapsed = (minElapsed + maxElapsed) / 2;
     }
-    if (msElapsed > maxElapsed) {
-      maxElapsed = msElapsed;
-    }
-    avgElapsed = (minElapsed + maxElapsed) / 2;
 
     auto remPerc = 100.0 - float(end - start) / float(end) * 100.0;
     auto timeLeft = (end - start) * avgElapsed;
