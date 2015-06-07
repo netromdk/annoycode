@@ -5,13 +5,13 @@
 
 class Consts {
 public:
-  static constexpr int imageWidth = 48; // px
-  static constexpr int imageHeight = 48; // px
+  static constexpr int imageWidth = 64; // px
+  static constexpr int imageHeight = 64; // px
   static constexpr int imageFontSize = 20; // pt
-  static constexpr int imageTextStartX = 2; // px
-  static constexpr int imageTextStartY = 30; // px
+  static constexpr int imageTextStartX = 20; // px
+  static constexpr int imageTextStartY = 36; // px
 
-  static constexpr float similarityThreshold = 0.996;
+  static constexpr float similarityThreshold = 0.998;
 
   static const QString defaultDataFile;
 
