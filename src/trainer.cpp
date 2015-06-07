@@ -7,6 +7,7 @@
 #include <QCommandLineParser>
 
 #include "Job.h"
+#include "Util.h"
 #include "Data.h"
 #include "Constants.h"
 
@@ -75,15 +76,28 @@ int main(int argc, char **argv) {
   pool.setMaxThreadCount(threads);
 
   QMutex mutex;
+  qint64 minElapsed = 0, maxElapsed = 0, avgElapsed = 0;
 
   auto onJobFinished =
-  [&data, &mutex, incSave](int start, int end, SubsMap matches) {
+  [&data, &mutex, incSave, &minElapsed, &maxElapsed, &avgElapsed]
+  (int start, int end, SubsMap matches, qint64 msElapsed) {
     QMutexLocker loacker(&mutex);
 
+    if (msElapsed < minElapsed || minElapsed == 0) {
+      minElapsed = msElapsed;
+    }
+    if (msElapsed > maxElapsed) {
+      maxElapsed = msElapsed;
+    }
+    avgElapsed = (minElapsed + maxElapsed) / 2;
+
     auto remPerc = 100.0 - float(end - start) / float(end) * 100.0;
+    auto timeLeft = (end - start) * avgElapsed;
+
     QString msg =
-      QString("Finished offset: %1, %2 remaining, %3% done")
-      .arg(start).arg(end - start).arg(remPerc);
+      QString("Finished offset: %1 in %2, %3 remaining, %4% done, %5 left")
+      .arg(start).arg(Util::formatTime(msElapsed)).arg(end - start)
+      .arg(remPerc).arg(Util::formatTime(timeLeft));
     qDebug() << qPrintable(msg);
 
     auto oldCount = data.getCount();
