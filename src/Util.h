@@ -12,6 +12,8 @@ public:
   static inline bool isColor(const QRgb &color, int r, int g, int b);
   static inline bool isWhite(const QRgb &color);
   static inline bool isBlack(const QRgb &color);
+
+  static QString formatTime(qint64 ms);
 };
 
 #endif // UTIL_H

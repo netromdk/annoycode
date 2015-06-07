@@ -77,3 +77,38 @@ float Util::getImageSimilarity(const QImage &img1, const QImage &img2) {
 
   return float(black) / float(total);
 }
+
+QString Util::formatTime(qint64 ms) {
+  constexpr qint64 Second = 1000, Minute = Second * 60, Hour = Minute * 60,
+    Day = Hour * 24, Week = Day * 7;
+  QString res;
+  if (ms >= Week) {
+    qint64 weeks = ms / Week;
+    res += QString("%1w").arg(weeks);
+    ms -= weeks * Week;
+  }
+  if (ms >= Day) {
+    qint64 days = ms / Day;
+    res += QString("%1%2d").arg(!res.isEmpty() ? " " : "").arg(days);
+    ms -= days * Day;
+  }
+  if (ms >= Hour) {
+    qint64 hours = ms / Hour;
+    res += QString("%1%2h").arg(!res.isEmpty() ? " " : "").arg(hours);
+    ms -= hours * Hour;
+  }
+  if (ms >= Minute) {
+    qint64 minutes = ms / Minute;
+    res += QString("%1%2m").arg(!res.isEmpty() ? " " : "").arg(minutes);
+    ms -= minutes * Minute;
+  }
+  if (ms >= Second) {
+    qint64 seconds = ms / Second;
+    res += QString("%1%2s").arg(!res.isEmpty() ? " " : "").arg(seconds);
+    ms -= seconds * Second;
+  }
+  if (ms > 0 || res.isEmpty()) {
+    res += QString("%1%2ms").arg(!res.isEmpty() ? " " : "").arg(ms);
+  }
+  return res;
+}
