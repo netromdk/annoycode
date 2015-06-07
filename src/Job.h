@@ -12,7 +12,7 @@ public:
   virtual void run();
 
 signals:
-  void finished(int start, int end, SubsMap matches);
+  void finished(int start, int end, SubsMap matches, int msElapsed);
 
 private:
   int start, end;

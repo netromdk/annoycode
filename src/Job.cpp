@@ -1,4 +1,5 @@
 #include <QDebug>
+#include <QDateTime>
 
 #include "Job.h"
 #include "Util.h"
@@ -8,9 +9,9 @@ Job::Job(int start, int end) : start(start), end(end) { }
 
 void Job::run() {
   auto data = Data();
-
   auto x = start;
   auto img1 = Util::renderSymbol(x);
+  auto startTime = QDateTime::currentDateTime();
 
   for (auto y = x + 1; y <= end; y++) {
     if (data.hasSubstitution(x, y)) {
@@ -26,5 +27,8 @@ void Job::run() {
     qDebug() << x << QChar(x) << "~" << y << QChar(y) << sim;
   }
 
-  emit finished(start, end, data.getSubstitutions());
+  auto endTime = QDateTime::currentDateTime();
+  auto elapsed = startTime.msecsTo(endTime);
+
+  emit finished(start, end, data.getSubstitutions(), elapsed);
 }
