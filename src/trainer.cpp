@@ -76,28 +76,32 @@ int main(int argc, char **argv) {
 
   QMutex mutex;
 
+  auto onJobFinished =
+  [&data, &mutex, incSave](int start, int end, SubsMap matches) {
+    QMutexLocker loacker(&mutex);
+
+    qDebug() << "Finished offset:" << start;
+
+    auto oldCount = data.getCount();
+    data.addSubstitutions(matches);
+    auto count = data.getCount();
+
+    data.setOffset(start);
+
+    if (count > 0 && count > oldCount) {
+      if (incSave) {
+        data.save();
+      }
+      else {
+        qDebug() << "Matches found:" << data.getCount();
+      }
+    }
+  };
+
   for (auto x = initSym; x <= end; x++) {
     auto *job = new Job(x, end);
     job->setAutoDelete(true);
-    QObject::connect(job, &Job::finished,
-                     [&data, &mutex, incSave](int start, int end, SubsMap matches) {
-                       QMutexLocker loacker(&mutex);
-
-                       auto oldCount = data.getCount();
-                       data.addSubstitutions(matches);
-                       auto count = data.getCount();
-
-                       data.setOffset(start);
-
-                       if (count > 0 && count > oldCount) {
-                         if (incSave) {
-                           data.save();
-                         }
-                         else {
-                           qDebug() << "Matches found:" << data.getCount();
-                         }
-                       }
-                     });
+    QObject::connect(job, &Job::finished, onJobFinished);
     pool.start(job);
   }
 
