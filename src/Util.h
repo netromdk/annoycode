@@ -16,4 +16,8 @@ public:
   static QString formatTime(qint64 ms);
 };
 
+inline bool floatEqual(double d1, double d2) {
+  return qFuzzyCompare(d1 + 1, d2 + 1);
+}
+
 #endif // UTIL_H
